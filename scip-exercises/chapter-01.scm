@@ -232,6 +232,8 @@
       guess
       (good-enough a (better-guess a guess))))
 
+; Let's define sqrt in terms of the
+
 (define (sqrt x)
   (good-enough x 1))
 
@@ -292,7 +294,7 @@
 
 ; Using applicative order evaluation, i.e., evaluate arguments and then apply.
 
-(squrt-iter 1.0 x)
+(sqrt-iter 1.0 x)
   (new-if (good-enough? 1.0 x)
           guess
           (sqrt-iter (improve guess x) x))
@@ -331,3 +333,37 @@
 ; number above is calculated to be 9.42809041582063e+20. A result that is 20 or so digits away
 ; from the actual number. Squaring this result yields 8.88888888888888e+41 which is significantly
 ; different from the original number in terms of absolute value
+
+; Here is the program:
+;
+(define (square x)
+  (* x x))
+
+(define (abs x)
+  (if (< x 0)
+      (- x)
+      x))
+
+(define (average x y)
+  (/ (+ x y)
+     2))
+
+(define (better-guess radicand guess)
+  (average guess (/ radicand guess)))
+
+(define (sqrt-iter radicand guess)
+  (if (good-enough radicand guess)
+      guess
+      (sqrt-iter radicand (better-guess radicand guess))))
+
+
+(define (good-enough radicand guess)
+  (define deltaGuess (abs (- (better-guess radicand guess) guess)))
+  (< deltaGuess (/ guess 10000)))
+
+
+(define (sqrt x)
+  (sqrt-iter x 1))
+
+; This program works better for small numbers. For large numbers,
+; it is worse than the original progam.
