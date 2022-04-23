@@ -367,3 +367,39 @@
 
 ; This program works better for small numbers. For large numbers,
 ; it is worse than the original progam.
+
+
+; ***Exercise 1.8***
+; Exercise 1.8: Newton’s method for cube roots is based on the fact that if y
+; is an approximation to the cube root of x, then a better approximation is given
+; by the value: ((x/y^2) + 2y)/3.
+; Use this formula to implement a cube root procedure analogous to the square-root
+; procedure.
+
+(define (abs x)
+  (if (< x 0)
+      (- x)
+      x))
+
+(define (good-enough radicand guess)
+  (define delta-guess (abs (- (better-guess radicand guess) guess)))
+  (< delta-guess (/ guess 10000)))
+
+(define (div-square x y)
+  (* (/ x y) (/ x y)))
+
+(define (better-guess radicand guess)
+  (/ (+ (div-square radicand guess)
+        (* 2 guess))
+     3))
+
+(define (cube-iter radicand guess)
+  (if (good-enough radicand guess)
+      guess
+      (cube-iter radicand (better-guess radicand guess))))
+
+(define (cube x)
+  (cube-iter x 1))
+
+; I verified the above code and it works. This wors for very small numbers but will break down
+; at very large numbers per the reasons outlined in the answer to the previous question.
